@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='identification.css') }}">
+    <title>Nhận Diện</title>
+</head>
+<body>
+    <h2>Nhận Diện</h2>
+    {% if image_path %}
+        <img src="{{ url_for('static', filename='images/' + image_path) }}" alt="Description of image" class="identification-image">
+    {% else %}
+        <p>Không tìm thấy ảnh.</p>
+    {% endif %}
+    <p>Tọa độ: <span id="coordinates">X: , Y: </span></p>
+    <script src="{{ url_for('static', filename='identification.js') }}" defer></script>
+</body>
+</html>
