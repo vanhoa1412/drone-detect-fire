@@ -1,14 +1,14 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 from flask_mysqldb import MySQL
-import base64
+import os
 
 app = Flask(__name__)
 
-# Cấu hình kết nối MySQL
-app.config['MYSQL_HOST'] = 'your_host'
-app.config['MYSQL_USER'] = 'your_username'
-app.config['MYSQL_PASSWORD'] = 'your_password'
-app.config['MYSQL_DB'] = 'your_database'
+# Cấu hình MySQL
+app.config['MYSQL_HOST'] = '127.0.0.1'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = '1234'
+app.config['MYSQL_DB'] = 'DRONE'
 
 mysql = MySQL(app)
 
@@ -25,18 +25,41 @@ def left_content():
     return render_template('left-content.html')
 
 @app.route('/identification')
-def identification():
-    # Truy vấn cơ sở dữ liệu để lấy đường dẫn ảnh mới nhất
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT image_path FROM detected ORDER BY ID DESC LIMIT 1")
-    image_data = cur.fetchone()
+def identification_default():
+    try:
+        # Lấy đường dẫn hình ảnh từ cơ sở dữ liệu
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT image_path FROM detected ORDER BY ID DESC LIMIT 1")
+        image_data = cur.fetchone()
+        cur.close()
 
-    if image_data:
-        image_path = image_data[0]  # Lấy đường dẫn ảnh
-    else:
-        image_path = None
+        if image_data:
+            image_path = image_data[0]  # Lấy đường dẫn hình ảnh
+            full_image_path = os.path.join('AI_pycode', image_path).replace('\\', '/')
+            print(f"Full image path: {full_image_path}")  # In ra để kiểm tra
+        else:
+            full_image_path = ''  # Đường dẫn hình ảnh mặc định
 
-    return render_template('identification.html', image_path=image_path)
+    except Exception as e:
+        print(f"Error: {e}")
+        full_image_path = ''  # Đường dẫn hình ảnh mặc định
+
+    return render_template('identification.html', image_path=full_image_path)
+
+@app.route('/identification/<path:image_path>')
+def identification(image_path):
+    try:
+        if image_path:
+            full_image_path = os.path.join('AI_pycode', image_path).replace('\\', '/')        
+            print(f"Image path: {full_image_path}")
+        else:
+            full_image_path = '' 
+        
+    except Exception as e:
+        print(f"Error: {e}")
+        full_image_path = ''  # Đường dẫn hình ảnh mặc định
+
+    return render_template('identification.html', image_path=full_image_path)
 
 @app.route('/analysis')
 def analysis():
@@ -44,7 +67,26 @@ def analysis():
 
 @app.route('/storage')
 def storage():
-    return render_template('storage.html')
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT ID, Datetime, image_path FROM detected ORDER BY ID DESC LIMIT 10")
+        images_data = cur.fetchall() 
+        cur.close()
+
+        image_info = []
+        for record in images_data:
+            image_info.append({
+                'id': record[0],
+                'datetime': record[1],
+                'image_path': record[2],
+                'coordinates': (0, 0)  # Thay thế bằng tọa độ thực tế nếu có
+            })
+
+    except Exception as e:
+        print(f"Error: {e}")
+        image_info = []  
+
+    return render_template('storage.html', image_info=image_info)
 
 if __name__ == "__main__":
     app.run(debug=True)

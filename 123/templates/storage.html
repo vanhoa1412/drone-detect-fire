@@ -3,12 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/storage.css">
-    <title>Lưu Trữ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/storage.css') }}">
+    <title>Lưu Trữ Ảnh</title>
 </head>
 <body>
-    <h2>Lưu Trữ</h2>
-    <p>Thông tin chi tiết về lưu trữ.</p>
-    <script src="storage.js" defer></script>
+    <h2>Lưu Trữ Ảnh</h2>
+    <div class="image-gallery">
+        {% for item in image_info %}
+            <div class="image-item">
+                <div class="image-info">
+                    <p>ID: {{ item.id }}</p>
+                    <p>Ngày giờ: {{ item.datetime }}</p>
+                    <p>
+                        Đường dẫn ảnh: 
+                        <a href="{{ url_for('identification', image_path=item.image_path) }}">
+                            {{ item.image_path }}
+                        </a>
+                    </p>
+                    <p>Tọa độ: X: {{ item.coordinates[0] }}, Y: {{ item.coordinates[1] }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <script src="{{ url_for('static', filename='js/storage.js') }}" defer></script>
 </body>
 </html>

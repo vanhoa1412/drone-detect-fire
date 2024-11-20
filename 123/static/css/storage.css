@@ -1,0 +1,25 @@
+body {
+    font-family: Arial, sans-serif; /* Set a default font */
+    margin: 0; /* Remove default margin */
+    padding: 20px; /* Add padding around the content */
+    background-color: #f9f9f9; /* Light background color */
+}
+
+h2 {
+    color: #4CAF50; /* Green color for headings */
+    margin-bottom: 20px; /* Space below the heading */
+}
+.image-gallery {
+    display: flex;
+    flex-direction: column;
+}
+.image-item {
+    margin-bottom: 15px;
+}
+.image-info {
+    margin-left: 15px; /* Khoảng cách giữa thông tin */
+}
+a {
+    color: #4CAF50; /* Thay đổi màu chữ cho liên kết */
+    text-decoration: underline; /* Gạch chân liên kết */
+}
