@@ -12,19 +12,32 @@
         {% for item in image_info %}
             <div class="image-item">
                 <div class="image-info">
-                    <p>ID: {{ item.id }}</p>
-                    <p>Ngày giờ: {{ item.datetime }}</p>
                     <p>
+                        ID: {{ item.id }} | 
+                        Ngày giờ: {{ item.datetime }} | 
                         Đường dẫn ảnh: 
                         <a href="{{ url_for('identification', image_path=item.image_path) }}">
                             {{ item.image_path }}
-                        </a>
+                        </a> | 
+                        Tọa độ: X: {{ item.coordinates[0] }}, Y: {{ item.coordinates[1] }}
                     </p>
-                    <p>Tọa độ: X: {{ item.coordinates[0] }}, Y: {{ item.coordinates[1] }}</p>
                 </div>
             </div>
         {% endfor %}
     </div>
+
+    <div class="pagination">
+        {% if page > 1 %}
+            <a class="button" href="{{ url_for('storage', page=page-1) }}">« Trước</a>
+        {% endif %}
+
+        <span>Trang {{ page }} của {{ total_pages }}</span>
+
+        {% if page < total_pages %}
+            <a class="button" href="{{ url_for('storage', page=page+1) }}">Tiếp »</a>
+        {% endif %}
+    </div>
+
     <script src="{{ url_for('static', filename='js/storage.js') }}" defer></script>
 </body>
 </html>

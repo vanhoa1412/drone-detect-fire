@@ -61,16 +61,42 @@ def identification(image_path):
 
     return render_template('identification.html', image_path=full_image_path)
 
-@app.route('/analysis')
-def analysis():
-    return render_template('analysis.html')
+# @app.route('/analysis')
+# def analysis():
+#     return render_template('analysis.html')
 
-@app.route('/storage')
-def storage():
+# @app.route('/storage')
+# def storage():
+#     try:
+#         cur = mysql.connection.cursor()
+#         cur.execute("SELECT ID, Datetime, image_path FROM detected ORDER BY ID DESC LIMIT 10")
+#         images_data = cur.fetchall() 
+#         cur.close()
+
+#         image_info = []
+#         for record in images_data:
+#             image_info.append({
+#                 'id': record[0],
+#                 'datetime': record[1],
+#                 'image_path': record[2],
+#                 'coordinates': (0, 0)  # Thay thế bằng tọa độ thực tế nếu có
+#             })
+
+#     except Exception as e:
+#         print(f"Error: {e}")
+#         image_info = []  
+
+#     return render_template('storage.html', image_info=image_info)
+
+
+@app.route('/storage/<int:page>')
+@app.route('/storage/')
+def storage(page=1):
     try:
         cur = mysql.connection.cursor()
-        cur.execute("SELECT ID, Datetime, image_path FROM detected ORDER BY ID DESC LIMIT 10")
-        images_data = cur.fetchall() 
+        offset = (page - 1) * 10  # Calculate the offset for pagination
+        cur.execute("SELECT ID, Datetime, image_path FROM detected ORDER BY ID DESC LIMIT 10 OFFSET %s", (offset,))
+        images_data = cur.fetchall()
         cur.close()
 
         image_info = []
@@ -79,14 +105,24 @@ def storage():
                 'id': record[0],
                 'datetime': record[1],
                 'image_path': record[2],
-                'coordinates': (0, 0)  # Thay thế bằng tọa độ thực tế nếu có
+                'coordinates': (0, 0)  # Replace with actual coordinates if available
             })
+
+        # Get the total number of records for pagination
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT COUNT(*) FROM detected")
+        total_records = cur.fetchone()[0]
+        cur.close()
+
+        total_pages = (total_records // 10) + (1 if total_records % 10 > 0 else 0)
 
     except Exception as e:
         print(f"Error: {e}")
-        image_info = []  
+        image_info = []
+        total_pages = 1  # Default to 1 page if there is an error
 
-    return render_template('storage.html', image_info=image_info)
+    return render_template('storage.html', image_info=image_info, page=page, total_pages=total_pages)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

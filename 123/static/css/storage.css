@@ -9,17 +9,53 @@ h2 {
     color: #4CAF50; /* Green color for headings */
     margin-bottom: 20px; /* Space below the heading */
 }
+
 .image-gallery {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Keep items in a column */
 }
+
 .image-item {
-    margin-bottom: 15px;
+    display: flex; /* Use flexbox for horizontal layout */
+    align-items: center; /* Center items vertically */
+    margin-bottom: 15px; /* Space below each item */
+    padding: 10px; /* Add some padding */
+    background-color: #fff; /* White background for items */
+    border: 1px solid #ddd; /* Light border for items */
+    border-radius: 5px; /* Slightly rounded corners */
 }
+
 .image-info {
-    margin-left: 15px; /* Khoảng cách giữa thông tin */
+    margin-left: 15px; /* Space between image and info */
+    display: flex; /* Use flexbox for horizontal layout */
+    flex-wrap: wrap; /* Allow wrapping if necessary */
 }
+
+.image-info p {
+    margin-right: 20px; /* Space between paragraphs */
+}
+
 a {
-    color: #4CAF50; /* Thay đổi màu chữ cho liên kết */
-    text-decoration: underline; /* Gạch chân liên kết */
+    color: #4CAF50; /* Change link color */
+    text-decoration: underline; /* Underline links */
+}
+
+.pagination {
+    margin: 20px 0;
+    text-align: right; /* Aligns text to the right */
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 0 5px;
+    background-color: #4CAF50; /* Bootstrap primary color */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #429645; /* Darker shade for hover effect */
 }
